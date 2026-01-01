@@ -1,6 +1,8 @@
 # DefaceIT
 
-[راهنمای فارسی](#defaceit-فارسی) | [Persian Guide](#defaceit-فارسی)
+<p align="center">
+  <a href="#defaceit-فارسی">راهنمای فارسی</a> | <a href="#defaceit-فارسی">Persian Guide</a>
+</p>
 
 DefaceIT is a cross-platform GUI application for blurring faces and license plates in videos using YOLOv11. The app supports both English and Persian languages.
 
@@ -183,7 +185,8 @@ python3 defaceit_gui.py
 
 ---
 
-# DefaceIT (فارسی) {#defaceit-فارسی}
+<a id="defaceit-فارسی"></a>
+# DefaceIT (فارسی)
 
 DefaceIT یک برنامه گرافیکی چند پلتفرمی برای تار کردن چهره‌ها و پلاک‌ها در ویدیوها با استفاده از YOLOv11 است. این برنامه از زبان‌های انگلیسی و فارسی پشتیبانی می‌کند.
 
