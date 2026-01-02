@@ -203,6 +203,7 @@ class VideoBlurService(
                             bitmap.recycle()
                         }
 
+                        // bitmapToYuv420 will handle scaling if dimensions don't match
                         val yuvBuffer = bitmapToYuv420(processedBitmap, finalWidth, finalHeight)
                         var inputBufferIndex = encoder.dequeueInputBuffer(10000)
                         while (inputBufferIndex >= 0) {
@@ -706,9 +707,25 @@ class VideoBlurService(
     }
 
     private fun bitmapToYuv420(bitmap: Bitmap, width: Int, height: Int): ByteArray {
+        // Ensure bitmap dimensions match expected dimensions
+        val bitmapWidth = bitmap.width
+        val bitmapHeight = bitmap.height
+        
+        val sourceBitmap = if (bitmapWidth != width || bitmapHeight != height) {
+            // Scale to match expected dimensions
+            Bitmap.createScaledBitmap(bitmap, width, height, true)
+        } else {
+            bitmap
+        }
+        
         val yuv = ByteArray(width * height * 3 / 2)
         val argb = IntArray(width * height)
-        bitmap.getPixels(argb, 0, width, 0, 0, width, height)
+        sourceBitmap.getPixels(argb, 0, width, 0, 0, width, height)
+        
+        // Clean up scaled bitmap if we created one
+        if (sourceBitmap != bitmap) {
+            sourceBitmap.recycle()
+        }
 
         val yPlaneSize = width * height
         var yIndex = 0
