@@ -57,6 +57,7 @@ fun MainScreen() {
     var progress by remember { mutableFloatStateOf(0f) }
     var statusText by remember { mutableStateOf(texts["ready"]) }
     var videoBlurService by remember { mutableStateOf<VideoBlurService?>(null) }
+    var showSecurityDialog by remember { mutableStateOf(false) }
     
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -149,6 +150,8 @@ fun MainScreen() {
                         if (result.isSuccess) {
                             val savedPath = result.getOrNull()
                             statusText = "${texts["success_complete"] ?: "Complete!"}\nSaved to: $savedPath"
+                            // Show security check dialog
+                            showSecurityDialog = true
                         } else {
                             statusText = "Error: ${result.exceptionOrNull()?.message ?: "Unknown error"}"
                         }
@@ -166,6 +169,32 @@ fun MainScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         
         CreditsSection(credits = Languages.credits, texts = texts)
+    }
+    
+    // Security check dialog
+    if (showSecurityDialog) {
+        AlertDialog(
+            onDismissRequest = { showSecurityDialog = false },
+            title = {
+                Text(
+                    text = texts["security_check_title"] ?: "Security Check Required",
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = texts["security_check_message"] ?: "Please DOUBLE CHECK the processed video for any remaining faces or sensitive information before sharing or publishing.\n\nFace detection may not catch all faces, especially in challenging conditions (poor lighting, angles, occlusions). Your security is important!",
+                    fontSize = 14.sp
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { showSecurityDialog = false }
+                ) {
+                    Text(text = texts["security_check_understood"] ?: "I Understand")
+                }
+            }
+        )
     }
 }
 

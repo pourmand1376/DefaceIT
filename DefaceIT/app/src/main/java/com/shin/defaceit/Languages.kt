@@ -37,7 +37,10 @@ object Languages {
             "error_file_not_found" to "Input file does not exist",
             "success_complete" to "Video processing complete!",
             "processing_speed" to "Processing speed:",
-            "fps" to "FPS"
+            "fps" to "FPS",
+            "security_check_title" to "Security Check Required",
+            "security_check_message" to "Please DOUBLE CHECK the processed video for any remaining faces or sensitive information before sharing or publishing.\n\nFace detection may not catch all faces, especially in challenging conditions (poor lighting, angles, occlusions). Your security is important!",
+            "security_check_understood" to "I Understand"
         )
     )
 
