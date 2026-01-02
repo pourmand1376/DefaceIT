@@ -10,10 +10,21 @@ import subprocess
 import os
 
 try:
-    import mediapipe as mp
-    MEDIAPIPE_AVAILABLE = True
+    try:
+        from mediapipe.python.solutions import face_detection as mp_face_detection
+        MEDIAPIPE_AVAILABLE = True
+        MEDIAPIPE_NEW_API = True
+    except ImportError:
+        import mediapipe as mp
+        if hasattr(mp, 'solutions'):
+            MEDIAPIPE_AVAILABLE = True
+            MEDIAPIPE_NEW_API = False
+        else:
+            MEDIAPIPE_AVAILABLE = False
+            MEDIAPIPE_NEW_API = False
 except ImportError:
     MEDIAPIPE_AVAILABLE = False
+    MEDIAPIPE_NEW_API = False
 
 
 class VideoBlurrer:
@@ -56,11 +67,17 @@ class VideoBlurrer:
         
         if detect_faces:
             if MEDIAPIPE_AVAILABLE:
-                self.mp_face_detection = mp.solutions.face_detection
-                self.face_detector = self.mp_face_detection.FaceDetection(
-                    model_selection=1,
-                    min_detection_confidence=self.confidence
-                )
+                if MEDIAPIPE_NEW_API:
+                    self.face_detector = mp_face_detection.FaceDetection(
+                        model_selection=1,
+                        min_detection_confidence=self.confidence
+                    )
+                else:
+                    self.mp_face_detection = mp.solutions.face_detection
+                    self.face_detector = self.mp_face_detection.FaceDetection(
+                        model_selection=1,
+                        min_detection_confidence=self.confidence
+                    )
             else:
                 if face_model_path:
                     face_model = YOLO(face_model_path)
