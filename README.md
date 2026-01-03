@@ -93,6 +93,7 @@ The easiest way to run DefaceIT without installing dependencies is using Docker.
    ```bash
    xhost +local:docker
    ```
+   *Note: This grants X11 access to all local Docker containers. For enhanced security in multi-user environments, consider using xhost with specific user IDs.*
 
 3. Create a `videos` directory for your input/output files:
    ```bash
@@ -402,6 +403,7 @@ DefaceIT یک برنامه چند پلتفرمی برای تار کردن چهر
    ```bash
    xhost +local:docker
    ```
+   *توجه: این دستور به همه کانتینرهای Docker محلی دسترسی X11 می‌دهد. برای امنیت بهتر در محیط‌های چند کاربره، استفاده از xhost با شناسه‌های کاربری خاص را در نظر بگیرید.*
 
 3. یک پوشه `videos` برای فایل‌های ورودی/خروجی ایجاد کنید:
    ```bash

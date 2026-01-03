@@ -53,5 +53,5 @@ setup.sh
 setup.bat
 run_macos.sh
 
-# Documentation
+# Documentation (not needed inside container)
 README.md

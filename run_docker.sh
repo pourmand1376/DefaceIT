@@ -30,6 +30,8 @@ echo ""
 
 # Allow X11 connections
 echo "Allowing X11 connections..."
+echo "Note: This grants X11 access to all local Docker containers."
+echo "      For enhanced security, consider using xhost with specific IDs."
 xhost +local:docker &> /dev/null
 if [ $? -eq 0 ]; then
     echo "✓ X11 connections allowed"
@@ -60,11 +62,14 @@ echo "Starting DefaceIT..."
 echo "Place your videos in the 'videos' folder to access them"
 echo ""
 
+# Get absolute path to current directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 # Run the container
 docker run -it --rm \
   -e DISPLAY=$DISPLAY \
   -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-  -v $(pwd)/videos:/videos \
+  -v "${SCRIPT_DIR}/videos:/videos" \
   --network host \
   defaceit
 
