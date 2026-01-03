@@ -96,7 +96,7 @@ The easiest way to run DefaceIT is using Docker with a simple web interface. No 
 
 3. Open your browser and go to:
    ```
-   http://localhost:5000
+   http://localhost:8080
    ```
 
 4. Upload your video, adjust settings, and process!
@@ -387,7 +387,7 @@ DefaceIT یک برنامه چند پلتفرمی برای تار کردن چهر
 
 3. مرورگر خود را باز کنید و به آدرس زیر بروید:
    ```
-   http://localhost:5000
+   http://localhost:8080
    ```
 
 4. ویدیوی خود را آپلود کنید، تنظیمات را تنظیم کنید و پردازش کنید!
