@@ -2,16 +2,15 @@ services:
   defaceit:
     build: .
     container_name: defaceit-app
-    environment:
-      - DISPLAY=${DISPLAY}
+    ports:
+      - "5000:5000"
     volumes:
-      # Mount X11 socket for GUI
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      # Mount current directory for video files
-      - ./videos:/videos
-    network_mode: host
-    stdin_open: true
-    tty: true
+      # Mount directories for uploads and outputs
+      - ./uploads:/app/uploads
+      - ./outputs:/app/outputs
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
+    restart: unless-stopped
     # Uncomment the following lines for GPU support (NVIDIA)
     # deploy:
     #   resources:

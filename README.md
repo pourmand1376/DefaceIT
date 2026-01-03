@@ -73,39 +73,39 @@ The `run.py` script will automatically:
 - Fall back to system Python if needed
 - Handle tkinter detection and errors
 
-### Docker (Linux/macOS)
+### Docker (Web Interface - Recommended)
 
-The easiest way to run DefaceIT without installing dependencies is using Docker.
+The easiest way to run DefaceIT is using Docker with a simple web interface. No need to install Python, dependencies, or deal with GUI complications.
 
 #### Prerequisites
 
-- Docker and Docker Compose installed
-- X11 server running (for GUI display)
+- Docker and Docker Compose installed ([Get Docker](https://docs.docker.com/get-docker/))
 
 #### Quick Start
 
-1. Clone the repository and navigate to it:
+1. Clone the repository:
    ```bash
+   git clone https://github.com/pourmand1376/DefaceIT.git
    cd DefaceIT
    ```
 
-2. Allow X11 connections (run once per session):
-   ```bash
-   xhost +local:docker
-   ```
-   *Note: This grants X11 access to all local Docker containers. For enhanced security in multi-user environments, consider using xhost with specific user IDs.*
-
-3. Create a `videos` directory for your input/output files:
-   ```bash
-   mkdir -p videos
-   ```
-
-4. Run with Docker Compose:
+2. Start the application:
    ```bash
    docker-compose up
    ```
 
-The application will build and start automatically. Place your videos in the `videos` folder to access them from within the application.
+3. Open your browser and go to:
+   ```
+   http://localhost:5000
+   ```
+
+4. Upload your video, adjust settings, and process!
+
+The web interface provides:
+- Drag-and-drop video upload
+- All processing settings (blur strength, confidence, device, etc.)
+- Real-time progress tracking
+- Direct download of processed videos
 
 #### Using GPU (NVIDIA)
 
@@ -124,36 +124,17 @@ To enable GPU acceleration for faster processing:
              capabilities: [gpu]
    ```
 
-3. Run with Docker Compose as usual:
+3. Restart the application:
    ```bash
+   docker-compose down
    docker-compose up
    ```
 
-#### Manual Docker Run
-
-If you prefer not to use Docker Compose:
+#### Stopping the Application
 
 ```bash
-# Build the image
-docker build -t defaceit .
-
-# Run the container
-docker run -it --rm \
-  -e DISPLAY=$DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-  -v $(pwd)/videos:/videos \
-  --network host \
-  defaceit
+docker-compose down
 ```
-
-For GPU support, add `--gpus all` to the docker run command.
-
-#### Troubleshooting Docker
-
-- **GUI not showing**: Make sure X11 is allowed (`xhost +local:docker`) and DISPLAY is set
-- **Permission denied on X11**: Run `xhost +local:docker` again
-- **Cannot connect to X server**: Check if X11 is running (`echo $DISPLAY`)
-- **Docker not found**: Install Docker Desktop or Docker Engine for your OS
 
 ## Usage
 
@@ -383,39 +364,39 @@ DefaceIT یک برنامه چند پلتفرمی برای تار کردن چهر
 - در صورت نیاز به Python سیستم بازمی‌گردد
 - تشخیص tkinter و خطاها را مدیریت می‌کند
 
-### Docker (Linux/macOS)
+### Docker (رابط وب - توصیه می‌شود)
 
-ساده‌ترین راه برای اجرای DefaceIT بدون نصب وابستگی‌ها استفاده از Docker است.
+ساده‌ترین راه برای اجرای DefaceIT استفاده از Docker با یک رابط وب ساده است. نیازی به نصب Python، وابستگی‌ها یا مشکلات رابط گرافیکی نیست.
 
 #### پیش‌نیازها
 
-- Docker و Docker Compose نصب شده باشد
-- سرور X11 در حال اجرا باشد (برای نمایش رابط گرافیکی)
+- Docker و Docker Compose نصب شده باشد ([دریافت Docker](https://docs.docker.com/get-docker/))
 
 #### شروع سریع
 
-1. مخزن را کلون کنید و به آن بروید:
+1. مخزن را کلون کنید:
    ```bash
+   git clone https://github.com/pourmand1376/DefaceIT.git
    cd DefaceIT
    ```
 
-2. اجازه اتصالات X11 را بدهید (یک بار در هر نشست اجرا کنید):
-   ```bash
-   xhost +local:docker
-   ```
-   *توجه: این دستور به همه کانتینرهای Docker محلی دسترسی X11 می‌دهد. برای امنیت بهتر در محیط‌های چند کاربره، استفاده از xhost با شناسه‌های کاربری خاص را در نظر بگیرید.*
-
-3. یک پوشه `videos` برای فایل‌های ورودی/خروجی ایجاد کنید:
-   ```bash
-   mkdir -p videos
-   ```
-
-4. با Docker Compose اجرا کنید:
+2. برنامه را اجرا کنید:
    ```bash
    docker-compose up
    ```
 
-برنامه به صورت خودکار ساخته و اجرا می‌شود. ویدیوهای خود را در پوشه `videos` قرار دهید تا از داخل برنامه به آنها دسترسی داشته باشید.
+3. مرورگر خود را باز کنید و به آدرس زیر بروید:
+   ```
+   http://localhost:5000
+   ```
+
+4. ویدیوی خود را آپلود کنید، تنظیمات را تنظیم کنید و پردازش کنید!
+
+رابط وب شامل موارد زیر است:
+- آپلود ویدیو با کشیدن و رها کردن
+- تمام تنظیمات پردازش (قدرت تار کردن، اعتماد، دستگاه و غیره)
+- پیگیری پیشرفت در زمان واقعی
+- دانلود مستقیم ویدیوهای پردازش شده
 
 #### استفاده از GPU (NVIDIA)
 
@@ -434,36 +415,17 @@ DefaceIT یک برنامه چند پلتفرمی برای تار کردن چهر
              capabilities: [gpu]
    ```
 
-3. با Docker Compose به صورت معمول اجرا کنید:
+3. برنامه را مجدداً راه‌اندازی کنید:
    ```bash
+   docker-compose down
    docker-compose up
    ```
 
-#### اجرای دستی Docker
-
-اگر ترجیح می‌دهید از Docker Compose استفاده نکنید:
+#### متوقف کردن برنامه
 
 ```bash
-# ساخت image
-docker build -t defaceit .
-
-# اجرای container
-docker run -it --rm \
-  -e DISPLAY=$DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-  -v $(pwd)/videos:/videos \
-  --network host \
-  defaceit
+docker-compose down
 ```
-
-برای پشتیبانی GPU، `--gpus all` را به دستور docker run اضافه کنید.
-
-#### عیب‌یابی Docker
-
-- **رابط گرافیکی نمایش داده نمی‌شود**: مطمئن شوید X11 مجاز است (`xhost +local:docker`) و DISPLAY تنظیم شده است
-- **خطای Permission denied در X11**: دستور `xhost +local:docker` را دوباره اجرا کنید
-- **Cannot connect to X server**: بررسی کنید که X11 در حال اجرا است (`echo $DISPLAY`)
-- **Docker پیدا نشد**: Docker Desktop یا Docker Engine را برای سیستم عامل خود نصب کنید
 
 ## استفاده
 

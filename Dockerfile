@@ -3,8 +3,7 @@ FROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
-    DEBIAN_FRONTEND=noninteractive \
-    DISPLAY=:0
+    DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -16,9 +15,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     libgl1 \
     libglx0 \
-    python3-tk \
-    tk-dev \
-    x11-apps \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -31,13 +27,16 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
-COPY defaceit_gui.py .
+COPY web_app.py .
 COPY video_blur_core.py .
 COPY languages.py .
-COPY run.py .
+COPY templates/ templates/
 
-# Create directory for videos
-RUN mkdir -p /videos
+# Create directories for uploads and outputs
+RUN mkdir -p /app/uploads /app/outputs
+
+# Expose port
+EXPOSE 5000
 
 # Set the entrypoint
-ENTRYPOINT ["python", "defaceit_gui.py"]
+CMD ["python", "web_app.py"]
