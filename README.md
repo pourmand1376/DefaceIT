@@ -73,6 +73,87 @@ The `run.py` script will automatically:
 - Fall back to system Python if needed
 - Handle tkinter detection and errors
 
+### Docker (Linux/macOS)
+
+The easiest way to run DefaceIT without installing dependencies is using Docker.
+
+#### Prerequisites
+
+- Docker and Docker Compose installed
+- X11 server running (for GUI display)
+
+#### Quick Start
+
+1. Clone the repository and navigate to it:
+   ```bash
+   cd DefaceIT
+   ```
+
+2. Allow X11 connections (run once per session):
+   ```bash
+   xhost +local:docker
+   ```
+
+3. Create a `videos` directory for your input/output files:
+   ```bash
+   mkdir -p videos
+   ```
+
+4. Run with Docker Compose:
+   ```bash
+   docker-compose up
+   ```
+
+The application will build and start automatically. Place your videos in the `videos` folder to access them from within the application.
+
+#### Using GPU (NVIDIA)
+
+To enable GPU acceleration for faster processing:
+
+1. Install [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+
+2. Uncomment the GPU section in `docker-compose.yml`:
+   ```yaml
+   deploy:
+     resources:
+       reservations:
+         devices:
+           - driver: nvidia
+             count: all
+             capabilities: [gpu]
+   ```
+
+3. Run with Docker Compose as usual:
+   ```bash
+   docker-compose up
+   ```
+
+#### Manual Docker Run
+
+If you prefer not to use Docker Compose:
+
+```bash
+# Build the image
+docker build -t defaceit .
+
+# Run the container
+docker run -it --rm \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+  -v $(pwd)/videos:/videos \
+  --network host \
+  defaceit
+```
+
+For GPU support, add `--gpus all` to the docker run command.
+
+#### Troubleshooting Docker
+
+- **GUI not showing**: Make sure X11 is allowed (`xhost +local:docker`) and DISPLAY is set
+- **Permission denied on X11**: Run `xhost +local:docker` again
+- **Cannot connect to X server**: Check if X11 is running (`echo $DISPLAY`)
+- **Docker not found**: Install Docker Desktop or Docker Engine for your OS
+
 ## Usage
 
 1. Launch the application using the instructions above
@@ -300,6 +381,87 @@ DefaceIT یک برنامه چند پلتفرمی برای تار کردن چهر
 - در صورت وجود از محیط مجازی استفاده می‌کند
 - در صورت نیاز به Python سیستم بازمی‌گردد
 - تشخیص tkinter و خطاها را مدیریت می‌کند
+
+### Docker (Linux/macOS)
+
+ساده‌ترین راه برای اجرای DefaceIT بدون نصب وابستگی‌ها استفاده از Docker است.
+
+#### پیش‌نیازها
+
+- Docker و Docker Compose نصب شده باشد
+- سرور X11 در حال اجرا باشد (برای نمایش رابط گرافیکی)
+
+#### شروع سریع
+
+1. مخزن را کلون کنید و به آن بروید:
+   ```bash
+   cd DefaceIT
+   ```
+
+2. اجازه اتصالات X11 را بدهید (یک بار در هر نشست اجرا کنید):
+   ```bash
+   xhost +local:docker
+   ```
+
+3. یک پوشه `videos` برای فایل‌های ورودی/خروجی ایجاد کنید:
+   ```bash
+   mkdir -p videos
+   ```
+
+4. با Docker Compose اجرا کنید:
+   ```bash
+   docker-compose up
+   ```
+
+برنامه به صورت خودکار ساخته و اجرا می‌شود. ویدیوهای خود را در پوشه `videos` قرار دهید تا از داخل برنامه به آنها دسترسی داشته باشید.
+
+#### استفاده از GPU (NVIDIA)
+
+برای فعال‌سازی شتاب GPU برای پردازش سریع‌تر:
+
+1. [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) را نصب کنید
+
+2. بخش GPU را در `docker-compose.yml` از حالت توضیح خارج کنید:
+   ```yaml
+   deploy:
+     resources:
+       reservations:
+         devices:
+           - driver: nvidia
+             count: all
+             capabilities: [gpu]
+   ```
+
+3. با Docker Compose به صورت معمول اجرا کنید:
+   ```bash
+   docker-compose up
+   ```
+
+#### اجرای دستی Docker
+
+اگر ترجیح می‌دهید از Docker Compose استفاده نکنید:
+
+```bash
+# ساخت image
+docker build -t defaceit .
+
+# اجرای container
+docker run -it --rm \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+  -v $(pwd)/videos:/videos \
+  --network host \
+  defaceit
+```
+
+برای پشتیبانی GPU، `--gpus all` را به دستور docker run اضافه کنید.
+
+#### عیب‌یابی Docker
+
+- **رابط گرافیکی نمایش داده نمی‌شود**: مطمئن شوید X11 مجاز است (`xhost +local:docker`) و DISPLAY تنظیم شده است
+- **خطای Permission denied در X11**: دستور `xhost +local:docker` را دوباره اجرا کنید
+- **Cannot connect to X server**: بررسی کنید که X11 در حال اجرا است (`echo $DISPLAY`)
+- **Docker پیدا نشد**: Docker Desktop یا Docker Engine را برای سیستم عامل خود نصب کنید
 
 ## استفاده
 

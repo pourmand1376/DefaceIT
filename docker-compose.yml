@@ -1,0 +1,22 @@
+services:
+  defaceit:
+    build: .
+    container_name: defaceit-app
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      # Mount X11 socket for GUI
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Mount current directory for video files
+      - ./videos:/videos
+    network_mode: host
+    stdin_open: true
+    tty: true
+    # Uncomment the following lines for GPU support (NVIDIA)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
