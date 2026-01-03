@@ -510,11 +510,11 @@
                         progressBarFill.style.width = statusData.progress + '%';
                         progressBarFill.textContent = statusData.progress + '%';
                         
-                        // Adjust polling interval based on progress
+                        // Adjust polling interval based on progress  
                         if (statusData.progress === lastProgress) {
                             consecutiveUnchanged++;
                             if (consecutiveUnchanged > 3) {
-                                pollDelay = Math.min(pollDelay + 1000, 5000); // Max 5 seconds
+                                pollDelay = Math.min(pollDelay * 1.5, 5000); // Exponential backoff, max 5 seconds
                             }
                         } else {
                             consecutiveUnchanged = 0;

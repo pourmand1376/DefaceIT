@@ -16,11 +16,14 @@ app.config['UPLOAD_FOLDER'] = '/app/uploads'
 app.config['OUTPUT_FOLDER'] = '/app/outputs'
 
 # Secret key for session management
-# WARNING: Change this in production! Set via SECRET_KEY environment variable
-secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-if secret_key == 'dev-secret-key-change-in-production':
+# WARNING: Set SECRET_KEY environment variable in production!
+secret_key = os.environ.get('SECRET_KEY')
+if not secret_key:
     import sys
-    print("WARNING: Using default secret key. Set SECRET_KEY environment variable in production!", file=sys.stderr)
+    import secrets
+    # Generate a random key for development
+    secret_key = secrets.token_hex(32)
+    print("WARNING: No SECRET_KEY set. Using auto-generated key. Set SECRET_KEY environment variable in production!", file=sys.stderr)
 app.config['SECRET_KEY'] = secret_key
 
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov', 'mkv', 'flv', 'wmv'}
@@ -42,6 +45,7 @@ def process_video_task(job_id, input_path, output_path, settings):
             """Progress callback receives 3 parameters from VideoBlurrer"""
             jobs[job_id]['progress'] = int(progress)
             jobs[job_id]['message'] = message
+            jobs[job_id]['fps'] = round(fps, 2) if fps > 0 else 0
         
         blurrer = VideoBlurrer(
             device=settings.get('device', 'auto'),
