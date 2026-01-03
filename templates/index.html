@@ -497,8 +497,12 @@
                 
                 statusMessage.textContent = 'Processing video... This may take a while depending on video size.';
                 
-                // Poll for status
-                const pollInterval = setInterval(async () => {
+                // Poll for status with adaptive interval
+                let pollDelay = 2000; // Start with 2 seconds
+                let consecutiveUnchanged = 0;
+                let lastProgress = 0;
+                
+                const pollStatus = async () => {
                     try {
                         const statusResponse = await fetch(`/status/${jobId}`);
                         const statusData = await statusResponse.json();
@@ -506,8 +510,19 @@
                         progressBarFill.style.width = statusData.progress + '%';
                         progressBarFill.textContent = statusData.progress + '%';
                         
+                        // Adjust polling interval based on progress
+                        if (statusData.progress === lastProgress) {
+                            consecutiveUnchanged++;
+                            if (consecutiveUnchanged > 3) {
+                                pollDelay = Math.min(pollDelay + 1000, 5000); // Max 5 seconds
+                            }
+                        } else {
+                            consecutiveUnchanged = 0;
+                            pollDelay = 2000; // Reset to 2 seconds when making progress
+                        }
+                        lastProgress = statusData.progress;
+                        
                         if (statusData.status === 'completed') {
-                            clearInterval(pollInterval);
                             statusMessage.className = 'status-message success';
                             statusMessage.textContent = '✅ Video processed successfully!';
                             downloadSection.innerHTML = `
@@ -519,16 +534,21 @@
                             submitBtn.disabled = false;
                             submitBtn.textContent = '🚀 Process Video';
                         } else if (statusData.status === 'failed') {
-                            clearInterval(pollInterval);
                             statusMessage.className = 'status-message error';
                             statusMessage.textContent = '❌ Processing failed: ' + (statusData.error || 'Unknown error');
                             submitBtn.disabled = false;
                             submitBtn.textContent = '🚀 Process Video';
+                        } else {
+                            // Continue polling
+                            setTimeout(pollStatus, pollDelay);
                         }
                     } catch (error) {
                         console.error('Status check error:', error);
+                        setTimeout(pollStatus, pollDelay);
                     }
-                }, 2000);
+                };
+                
+                pollStatus(); // Start polling
                 
             } catch (error) {
                 statusMessage.className = 'status-message error';

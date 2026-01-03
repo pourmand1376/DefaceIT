@@ -14,11 +14,19 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB max file size
 app.config['UPLOAD_FOLDER'] = '/app/uploads'
 app.config['OUTPUT_FOLDER'] = '/app/outputs'
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+
+# Secret key for session management
+# WARNING: Change this in production! Set via SECRET_KEY environment variable
+secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+if secret_key == 'dev-secret-key-change-in-production':
+    import sys
+    print("WARNING: Using default secret key. Set SECRET_KEY environment variable in production!", file=sys.stderr)
+app.config['SECRET_KEY'] = secret_key
 
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov', 'mkv', 'flv', 'wmv'}
 
-# Store job statuses in memory (for simple deployment)
+# Store job statuses in memory
+# NOTE: This is lost on restart. For production, consider Redis or database
 jobs = {}
 
 def allowed_file(filename):
@@ -30,8 +38,10 @@ def process_video_task(job_id, input_path, output_path, settings):
         jobs[job_id]['status'] = 'processing'
         jobs[job_id]['progress'] = 0
         
-        def progress_callback(progress):
+        def progress_callback(progress, fps, message):
+            """Progress callback receives 3 parameters from VideoBlurrer"""
             jobs[job_id]['progress'] = int(progress)
+            jobs[job_id]['message'] = message
         
         blurrer = VideoBlurrer(
             device=settings.get('device', 'auto'),
@@ -108,6 +118,8 @@ def upload_file():
     }
     
     # Start background processing
+    # Note: Using daemon threads for simplicity. For production, consider
+    # a task queue like Celery for better job management and graceful shutdown
     thread = threading.Thread(
         target=process_video_task,
         args=(job_id, input_path, output_path, settings)
